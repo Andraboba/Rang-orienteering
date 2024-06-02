@@ -19,6 +19,22 @@ def save_html_to_txt():
     else:
         messagebox.showerror("Error", "Failed to retrieve data from the web page")
 
+def save_for_teem(result,base,m,dlin,f,fot):
+    if str([m[1], m[2]]) not in base:
+        base.append([m[1], m[2]])
+    for i in range(len(dlin)):
+        if i == len(dlin) - 1:
+            break
+        else:
+            if dlin[i] < f < dlin[i + 1]:
+                if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[-1] == "п.п.7.2.6":
+                    fot.append(
+                        f"снят,для справки место {m[0]} из {dlin[i + 1] - dlin[i] - 1} {m[1]}, {m[2]}, очки:{result}")
+                else:
+                    fot.append(f"{m[-1]} из {dlin[i + 1] - dlin[i] - 1} , {m[1]} {m[2]}, очки:{result}")
+    return fot
+
+
 
 def extract_data_from_txt():
 
@@ -58,10 +74,6 @@ def process_data():
     except IOError as e:
         with open("base.txt","w") as f1:
             base=[]
-
-
-    with open("base.txt") as f1:
-        base=[y.replace("\n","") for y in f1]
     if team_results:
         if team_results[0] == 1:
             team_results.pop(0)
@@ -75,61 +87,35 @@ def process_data():
                 m = list(filter(None, m))
                 if len(m[-3])==4:
                     if m[0] == "1":
-                        tlid = int(m[-2][0] + m[-2][1]) + 3600 + int(m[-2][3] + m[-2][4]) * 60 + int(m[-2][6] + m[-2][6])
-                        result = 1000
+                        tlid = int(m[-2][0] + m[-2][1]) * 3600 + int(m[-2][3] + m[-2][4]) * 60 + int(m[-2][6] + m[-2][6])
                     if team_name in m or str([m[1], m[2]]) in base:
-                        if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[
-                            -1] == "п.п.7.2.6":
+                        if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[-1] == "п.п.7.2.6":
                             result = 0
                         else:
-                            tlich = int(m[-2][0] + m[-2][1]) + 3600 + int(m[-2][3] + m[-2][4]) * 60 + int(
-                                m[-2][6] + m[-2][6])
+                            tlich = int(m[-2][0] + m[-2][1]) * 3600 + int(m[-2][3] + m[-2][4]) * 60 + int( m[-2][6] + m[-2][6])
                             result = int((2 - (tlich / tlid)) * 1000)
                             if result < 0:
                                 result = 1
                         f = team_results.index(y)
-                        if str([m[1], m[2]]) not in base:
-                            base.append([m[1], m[2]])
-                        for i in range(len(dlin)):
-                            if i == len(dlin) - 1:
-                                break
-                            else:
-                                if dlin[i] < f < dlin[i + 1]:
-                                    if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[
-                                        -1] == "п.п.7.2.6":
-                                        fot.append(
-                                            f"снят,для справки место {m[0]} из {dlin[i + 1] - dlin[i] - 1} {m[1]}, {m[2]}, очки:{result}")
-                                    else:
-                                        fot.append(
-                                            f"{m[-1]} из {dlin[i + 1] - dlin[i] - 1} , {m[1]} {m[2]}, очки:{result}")
+                        fot=save_for_teem(result, base, m, dlin, f, fot)
+
                 else:
                     if m[0] == "1":
-                        tlid = int(m[-3][0] + m[-3][1]) + 3600 + int(m[-3][3] + m[-3][4]) * 60 + int(m[-3][6] + m[-3][6])
-                        son=len(m)
+                        tlid = int(m[-3][0] + m[-3][1]) * 3600 + int(m[-3][3] + m[-3][4]) * 60 + int(m[-3][6] + m[-3][6])
                         result = 1000
                     if team_name in m or str([m[1],m[2]]) in base:
                         if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[-1] == "п.п.7.2.6" or m[-1] == "Снят" or len(m[-1])>3:
                             result=0
                         else:
-                            print(m)
                             tlich=int(m[-3][0]+m[-3][1])*3600+int(m[-3][3]+m[-3][4])*60+int(m[-3][6] + m[-3][6])
                             result = int((2 - (tlich / tlid)) * 1000)
                             if result < 0:
                                 result = 1
-
                         f = team_results.index(y)
-                        if str([m[1],m[2]]) not in base:
-                            base.append([m[1],m[2]])
-                        for i in range(len(dlin)):
-                            if i == len(dlin) - 1:
-                                break
-                            else:
-                                if dlin[i] < f < dlin[i + 1]:
-                                    if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[-1] == "п.п.7.2.6":
-                                        fot.append(
-                                            f"снят,для справки место {m[0]} из {dlin[i + 1] - dlin[i] - 1} {m[1]}, {m[2]}, очки:{result}")
-                                    else:
-                                        fot.append(f"{m[-1]} из {dlin[i + 1] - dlin[i] - 1} , {m[1]} {m[2]}, очки:{result}")
+                        fot=save_for_teem(result, base, m, dlin, f, fot)
+
+
+
             with open(output_filename_entry.get(), "w") as file:
                 for item in fot:
                     file.write(str(item) + "\n")
@@ -146,9 +132,7 @@ def process_data():
             for i in team_results:
                 if "<a href" in i:
                     dlin.append(team_results.index(i))
-                i = i.replace(
-                    "<tr><th>№ п/п </th><th>Номер </th><th>Фамилия, Имя </th><th>Команда </th><th> </th><th>21.03.2024 </th><th>22.03.2024 </th><th>Сумма </th><th>Место </th><th>Отставание </th></tr>\n",
-                    "")
+
                 q.append(i)
             dlin.append(len(team_results))
 
