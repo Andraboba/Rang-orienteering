@@ -3,7 +3,6 @@ from tkinter import messagebox
 import requests
 import os
 
-
 def save_html_to_txt():
     url = url_entry.get()
     sfr = int(sfr_entry.get())
@@ -85,34 +84,20 @@ def process_data():
                 g = y.replace("\n", "")
                 m = list(map(str, g.split(" ")))
                 m = list(filter(None, m))
-                if len(m[-3])==4:
-                    if m[0] == "1":
-                        tlid = int(m[-2][0] + m[-2][1]) * 3600 + int(m[-2][3] + m[-2][4]) * 60 + int(m[-2][6] + m[-2][6])
-                    if team_name in m or str([m[1], m[2]]) in base:
-                        if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[-1] == "п.п.7.2.6":
-                            result = 0
-                        else:
-                            tlich = int(m[-2][0] + m[-2][1]) * 3600 + int(m[-2][3] + m[-2][4]) * 60 + int( m[-2][6] + m[-2][6])
-                            result = int((2 - (tlich / tlid)) * 1000)
-                            if result < 0:
-                                result = 1
-                        f = team_results.index(y)
-                        fot=save_for_teem(result, base, m, dlin, f, fot)
-
-                else:
-                    if m[0] == "1":
-                        tlid = int(m[-3][0] + m[-3][1]) * 3600 + int(m[-3][3] + m[-3][4]) * 60 + int(m[-3][6] + m[-3][6])
-                        result = 1000
-                    if team_name in m or str([m[1],m[2]]) in base:
-                        if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[-1] == "п.п.7.2.6" or m[-1] == "Снят" or len(m[-1])>3:
-                            result=0
-                        else:
-                            tlich=int(m[-3][0]+m[-3][1])*3600+int(m[-3][3]+m[-3][4])*60+int(m[-3][6] + m[-3][6])
-                            result = int((2 - (tlich / tlid)) * 1000)
-                            if result < 0:
-                                result = 1
-                        f = team_results.index(y)
-                        fot=save_for_teem(result, base, m, dlin, f, fot)
+                if len(m[-3])!=4:
+                    m.pop(-2)
+                if m[0] == "1":
+                    tlid = int(m[-2][0] + m[-2][1]) * 3600 + int(m[-2][3] + m[-2][4]) * 60 + int(m[-2][6] + m[-2][6])
+                if team_name in m or str([m[1], m[2]]) in base:
+                    if m[-1] == "3.13.12.2" or m[-1] == "п.3.13.12.3" or m[-1] == "п.3.13.12.2" or m[-1] == "п.п.7.2.6":
+                        result = 0
+                    else:
+                        tlich = int(m[-2][0] + m[-2][1]) * 3600 + int(m[-2][3] + m[-2][4]) * 60 + int( m[-2][6] + m[-2][6])
+                        result = int((2 - (tlich / tlid)) * 1000)
+                        if result < 0:
+                            result = 1
+                    f = team_results.index(y)
+                    fot=save_for_teem(result, base, m, dlin, f, fot)
 
 
 
